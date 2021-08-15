@@ -1,1 +1,5 @@
-# account-aggregator-sample-app
+# Account Aggregator Sample App
+
+## Servers - Node
+
+## Client - React Native
