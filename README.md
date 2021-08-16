@@ -1,5 +1,3 @@
-<img src="https://user-images.githubusercontent.com/284612/129541889-56fd9069-b3a4-4bfe-8b93-a3b667e810b0.png" width="250" align="right" />
-
 # Account Aggregator sample app 📱
 
 This is a sample Personal Finance Management (PFM) app built using [Setu Account Aggregator sandbox](https://setu.co/data/account-aggregator).
@@ -9,12 +7,17 @@ This is a sample Personal Finance Management (PFM) app built using [Setu Account
 
 ## Try it out
 
+<img width="200" src="https://user-images.githubusercontent.com/284612/129541889-56fd9069-b3a4-4bfe-8b93-a3b667e810b0.png" align="right" />
+
 This app has been [published to **Expo**](https://expo.dev/@aditya67/account-aggregator-pfm). To try it out:
 
 - Download [Expo client](https://expo.dev/client) on your Android or iOS device
 - Open [the Expo link](https://expo.dev/@aditya67/account-aggregator-pfm) and scan the QR code
     - On Android: Scan with the Expo app
     - On iOS: Scan with the iOS Camera app after installing Expo Go
+- Enter your mobile number to get started
+
+
 
 ## Build your own apps
 
