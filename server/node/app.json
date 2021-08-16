@@ -1,0 +1,14 @@
+{
+  "name": "Account Aggregator Express Sample",
+  "description": "A simple PFM app built using Setu AA sandbox",
+  "keywords": [
+    "setu",
+    "node",
+    "nodejs",
+    "express",
+    "account-aggregator",
+    "pfm"
+  ],
+  "website": "https://setu.co",
+  "repository": "https://github.com/SetuHQ/account-aggregator-sample-app"
+}
