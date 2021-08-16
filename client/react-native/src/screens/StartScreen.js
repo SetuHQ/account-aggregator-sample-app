@@ -21,9 +21,7 @@ export default function StartScreen({ navigation }) {
       setLoading(false);
     } else {
       try {
-        const response = await fetch(
-          "https://demo-pfm.herokuapp.com/consent/" + number.value
-        );
+        const response = await fetch("<URL_OF_EXPRESS_APP>/" + number.value);
         const json = await response.text();
         navigation.navigate("Dashboard", { param: json });
       } catch (error) {

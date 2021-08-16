@@ -11,7 +11,7 @@ import WebView from "react-native-webview";
 
 export default function Dashboard({ navigation, route }) {
   const webviewRef = useRef(null);
-  const redirect_url = "https://demo-pfm.herokuapp.com/redirect/";
+  const redirect_url = "<URL_OF_EXPRESS_APP>/redirect/";
 
   const onNavigation = (navState) => {
     if (navState.url === redirect_url) {

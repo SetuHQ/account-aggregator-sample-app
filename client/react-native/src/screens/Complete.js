@@ -19,7 +19,7 @@ export default function Complete({ navigation }) {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://demo-pfm.herokuapp.com/get-data/");
+      const response = await fetch("<URL_OF_EXPRESS_APP>/get-data");
       const json = await response.json();
       console.log(json["Account"]["$"]);
       setData({
