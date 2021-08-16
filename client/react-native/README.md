@@ -1,13 +1,9 @@
 # React Native
 
-PFM client - React Native
-
 Clone the repository
 
-Install dependencies
-`npm install` or `yarn install`
+Install dependencies - `npm install` or `yarn install`
 
-Start app
-`npm run start` or `yarn start`
+Start app - `npm run start` or `yarn start`
 
-This repo uses expo, you can use expo to publish your app to Android PlayStore or iOS App store.
+Replace the URLs in the app with your backend URLs. This repo uses expo, you can use expo to publish your app to Android PlayStore or iOS App store.
