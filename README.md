@@ -12,4 +12,5 @@ This app has been published to Expo, you can find it here - https://expo.dev/@ad
 ## Useful links
 
 Setu Account Aggregator - https://setu.co/data/account-aggregator
+
 Setu AA docs - https://docs.setu.co/data/account-aggregator/overview
