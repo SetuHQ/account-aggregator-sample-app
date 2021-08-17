@@ -41,7 +41,7 @@ export default function Complete({ navigation }) {
   return (
     <Background>
       <Header>Consent successfully approved</Header>
-      <Paragraph>Please wait while we fetch you're financial data.</Paragraph>
+      <Paragraph>Please wait while we fetch your financial data.</Paragraph>
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
