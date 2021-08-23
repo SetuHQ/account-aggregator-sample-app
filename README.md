@@ -14,7 +14,7 @@ This app has been [published to **Expo**](https://expo.dev/@aditya67/account-agg
 - Download [Expo client](https://expo.dev/client) on your Android or iOS device
 - Open [the Expo link](https://expo.dev/@aditya67/account-aggregator-pfm) and scan the QR code
     - On Android: Scan with the Expo app
-    - On iOS: Scan with the iOS Camera app after installing Expo Go
+    - On iOS: Scan the QR code is not currently supported on iOS devices. This is a [known limitation from Expo](https://blog.expo.dev/upcoming-limitations-to-ios-expo-client-8076d01aee1a)
 - Enter your mobile number to get started
 
 
