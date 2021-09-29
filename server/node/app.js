@@ -61,7 +61,7 @@ app.get("/consent/:mobileNumber", (req, res) => {
         config.app_url +
         "/" +
         response.data.ConsentHandle +
-        "?redirect_url=https://demo-pfm.herokuapp.com/redirect";
+        "?redirect_url=<YOUR_CLIENT_URL>/redirect";
       res.send(url);
     })
     .catch(function (error) {

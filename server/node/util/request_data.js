@@ -20,8 +20,8 @@ const requestDataBody = (signedConsent, consent_id, keys) => {
     timestamp: dateNow.toISOString(),
     txnid: uuid.create_UUID(),
     FIDataRange: {
-      from: "2018-12-06T11:39:57.153Z",
-      to: "2020-07-03T14:25:33.440Z",
+      from: "2021-01-06T11:39:57.153Z",
+      to: "2021-06-30T14:25:33.440Z",
     },
 
     Consent: {

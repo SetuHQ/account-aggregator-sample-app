@@ -1,7 +1,6 @@
 const uuid = require("./uuid");
 var axios = require("axios");
 const config = require("./../config");
-var parseString = require("xml2js").parseString;
 const localStorage = require("localStorage");
 
 const decrypt_data = (fi, privateKey, keyMaterial) => {
@@ -23,11 +22,7 @@ const decrypt_data = (fi, privateKey, keyMaterial) => {
     .then((res) => {
       let base64Data = res.data["base64Data"];
       let decoded_data = Buffer.from(base64Data, "base64").toString();
-      var xml = decoded_data;
-      parseString(xml, function (err, result) {
-        console.log(typeof result);
-        localStorage.setItem("jsonData", JSON.stringify(result));
-      });
+      localStorage.setItem("jsonData", JSON.stringify(decoded_data));
     })
     .catch((err) => console.log(err));
 };
