@@ -12,7 +12,6 @@ module.exports = {
   // Server port.
   port: process.env.PORT || 5000,
   api_url: process.env.API_URL,
-  app_url: process.env.ANUMATI_URL,
-  client_api_key: process.env.CLIENT_API_KEY,
-  rahasya_url: process.env.RAHASYA_URL,
+  client_id: process.env.CLIENT_ID,
+  client_secret: process.env.CLIENT_SECRET,
 };

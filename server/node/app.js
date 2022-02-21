@@ -11,28 +11,22 @@ const config = require("./config");
 var axios = require("axios");
 const localStorage = require("localStorage");
 
-var jwkToPem = require("jwk-to-pem");
-
 // UTILS
-const uuid = require("./util/uuid");
-const signature = require("./util/request_signing");
-const requestData = require("./util/request_data");
 const createData = require("./util/consent_detail");
-const decrypt_data = require("./util/decrypt_data");
-
-const fs = require("fs");
+const dataFlow = require("./util/request_data");
 
 // use the express-static middleware
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
+// app.use(bodyParser.text({ defaultCharset: "utf-8" }));
 
 app.use(express.static("public"));
 
 // define the first route
 app.get("/", function (req, res) {
-  res.send("Hello from AA sample app");
+  res.send("Hello");
 });
 
 ///// CREATE CONSENT CALL
@@ -40,28 +34,20 @@ app.get("/", function (req, res) {
 app.get("/consent/:mobileNumber", (req, res) => {
   localStorage.setItem("consent", "Pending");
   let body = createData(req.params.mobileNumber);
-  const privateKey = fs.readFileSync("./keys/private_key.pem", {
-    encoding: "utf8",
-  });
-  let detachedJWS = signature.makeDetachedJWS(privateKey, body);
   var requestConfig = {
     method: "post",
-    url: config.api_url + "/Consent",
+    url: config.api_url + "/consents",
     headers: {
       "Content-Type": "application/json",
-      client_api_key: config.client_api_key,
-      "x-jws-signature": detachedJWS,
+      "x-client-id": config.client_id,
+      "x-client-secret": config.client_secret,
     },
     data: body,
   };
 
   axios(requestConfig)
     .then(function (response) {
-      let url =
-        config.app_url +
-        "/" +
-        response.data.ConsentHandle +
-        "?redirect_url=<YOUR_CLIENT_URL>/redirect";
+      let url = response.data.url;
       res.send(url);
     })
     .catch(function (error) {
@@ -72,99 +58,47 @@ app.get("/consent/:mobileNumber", (req, res) => {
 
 ////// CONSENT NOTIFICATION
 
-app.post("/Consent/Notification", (req, res) => {
+app.post("/notification", (req, res) => {
   var body = req.body;
-  console.log(body);
-
-  let headers = req.headers;
-  let obj = JSON.parse(fs.readFileSync("./keys/setu_public_key.json", "utf8"));
-  let pem = jwkToPem(obj);
-
-  if (signature.validateDetachedJWS(headers["x-jws-signature"], body, pem)) {
-    let consent_id = body.ConsentStatusNotification.consentId;
-    let consent_status = body.ConsentStatusNotification.consentStatus;
-
-    localStorage.setItem("consent_id", consent_id);
-    localStorage.setItem("consent_status", consent_status);
-
-    if (consent_status === "ACTIVE") {
-      fetchSignedConsent(consent_id);
+  if (body.type === "CONSENT_STATUS_UPDATE") {
+    if (body.data.status === "ACTIVE") {
+      console.log("In Consent notification");
+      fi_data_request(body.consentId);
+    } else {
+      localStorage.setItem("jsonData", "Rejected");
     }
-
-    const dateNow = new Date();
-    res.send({
-      ver: "1.0",
-      timestamp: dateNow.toISOString(),
-      txnid: uuid.create_UUID(),
-      response: "OK",
-    });
-  } else {
-    res.send("Invalid Signature");
   }
+  if (body.type === "SESSION_STATUS_UPDATE") {
+    if (body.data.status === "ACTIVE") {
+      console.log("In FI notification");
+      fi_data_fetch(body.dataSessionId);
+    } else {
+      localStorage.setItem("jsonData", "PENDING");
+    }
+  }
+
+  res.send("OK");
 });
-
-////// FETCH SIGNED CONSENT
-
-const fetchSignedConsent = (consent_id) => {
-  const privateKey = fs.readFileSync("./keys/private_key.pem", {
-    encoding: "utf8",
-  });
-  let detachedJWS = signature.makeDetachedJWS(
-    privateKey,
-    "/Consent/" + consent_id
-  );
-  var requestConfig = {
-    method: "get",
-    url: config.api_url + "/Consent/" + consent_id,
-    headers: {
-      "Content-Type": "application/json",
-      client_api_key: config.client_api_key,
-      "x-jws-signature": detachedJWS,
-    },
-  };
-
-  axios(requestConfig)
-    .then(function (response) {
-      fi_data_request(response.data.signedConsent, consent_id);
-    })
-    .catch(function (error) {
-      console.log(error);
-      console.log("Error");
-    });
-};
 
 ////// FI DATA REQUEST
 
-const fi_data_request = async (signedConsent, consent_id) => {
-  let keys = await requestData.generateKeyMaterial();
-  let request_body = requestData.requestDataBody(
-    signedConsent,
-    consent_id,
-    keys["KeyMaterial"]
-  );
-  const privateKey = fs.readFileSync("./keys/private_key.pem", {
-    encoding: "utf8",
-  });
-  let detachedJWS = signature.makeDetachedJWS(privateKey, request_body);
+const fi_data_request = async (consent_id) => {
+  console.log("In FI data request");
+  let request_body = dataFlow.requestData(consent_id);
   var requestConfig = {
     method: "post",
-    url: config.api_url + "/FI/request",
+    url: config.api_url + "/sessions",
     headers: {
       "Content-Type": "application/json",
-      client_api_key: config.client_api_key,
-      "x-jws-signature": detachedJWS,
+      "x-client-id": config.client_id,
+      "x-client-secret": config.client_secret,
     },
     data: request_body,
   };
 
   axios(requestConfig)
     .then(function (response) {
-      // Ideally, after this step we save the session ID in your DB and wait for FI notification and then proceed.
-      fi_data_fetch(
-        response.data.sessionId,
-        keys["privateKey"],
-        keys["KeyMaterial"]
-      );
+      console.log("Data request sent");
     })
     .catch(function (error) {
       console.log(error);
@@ -172,57 +106,32 @@ const fi_data_request = async (signedConsent, consent_id) => {
     });
 };
 
-////// FI NOTIFICATION
-
-app.post("/FI/Notification", (req, res) => {
-  var body = req.body;
-  let headers = req.headers;
-  let obj = JSON.parse(fs.readFileSync("./keys/setu_public_key.json", "utf8"));
-  let pem = jwkToPem(obj);
-
-  if (signature.validateDetachedJWS(headers["x-jws-signature"], body, pem)) {
-    // Do something with body
-    // Ideally you wait for this notification and then proceed with Data fetch request.
-    const dateNow = new Date();
-    res.send({
-      ver: "1.0",
-      timestamp: dateNow.toISOString(),
-      txnid: uuid.create_UUID(),
-      response: "OK",
-    });
-  } else {
-    res.send("Invalid Signature");
-  }
-});
-
 ////// FETCH DATA REQUEST
 
-const fi_data_fetch = (session_id, encryption_privateKey, keyMaterial) => {
-  const privateKey = fs.readFileSync("./keys/private_key.pem", {
-    encoding: "utf8",
-  });
-  let detachedJWS = signature.makeDetachedJWS(
-    privateKey,
-    "/FI/fetch/" + session_id
-  );
+const fi_data_fetch = (session_id) => {
+  console.log("In FI data fetch");
   var requestConfig = {
     method: "get",
-    url: config.api_url + "/FI/fetch/" + session_id,
+    url: config.api_url + "/sessions/" + session_id,
     headers: {
       "Content-Type": "application/json",
-      client_api_key: config.client_api_key,
-      "x-jws-signature": detachedJWS,
+      "x-client-id": config.client_id,
+      "x-client-secret": config.client_secret,
     },
   };
   axios(requestConfig)
     .then(function (response) {
-      decrypt_data(response.data.FI, encryption_privateKey, keyMaterial);
+      localStorage.setItem("jsonData", response.data);
     })
     .catch(function (error) {
       console.log(error);
       console.log("Error");
     });
 };
+
+app.post("/redirect", (req, res) => {
+  res.send(localStorage.getItem("consent"));
+});
 
 ///// GET DATA
 

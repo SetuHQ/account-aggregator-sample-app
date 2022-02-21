@@ -14,7 +14,7 @@ export default function Dashboard({ navigation, route }) {
   const redirect_url = "<URL_OF_EXPRESS_APP>/redirect/";
 
   const onNavigation = (navState) => {
-    if (navState.url === redirect_url) {
+    if (navState.url.includes(redirect_url)) {
       navigation.navigate("Complete");
     }
   };

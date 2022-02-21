@@ -24,13 +24,14 @@ export default function Complete({ navigation }) {
   useEffect(() => {
     setTimeout(function () {
       fetchData();
-    }, 5000);
+    }, 15000);
   }, []);
 
   const fetchData = async () => {
     try {
       const response = await fetch("<URL_OF_BACKEND_APP>/get-data/");
       const json = await response.json();
+      json = json["Payload"][0]["data"][0]["decryptedFI"];
       let transactions = json["account"]["transactions"]["transaction"];
       let total_amount = 0;
       let num_debit = 0;

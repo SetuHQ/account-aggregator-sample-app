@@ -1,41 +1,49 @@
-const uuid = require("./uuid");
-
 const createData = (mobileNumber) => {
   const dateNow = new Date();
   const expiry = new Date(dateNow.getTime() + 600000);
   var data = JSON.stringify({
-    ver: "1.0",
-    timestamp: dateNow.toISOString(),
-    txnid: uuid.create_UUID(),
-    ConsentDetail: {
+    Detail: {
       consentStart: dateNow.toISOString(),
       consentExpiry: expiry.toISOString(),
-      consentMode: "VIEW",
-      fetchType: "ONETIME",
-      consentTypes: ["TRANSACTIONS", "PROFILE", "SUMMARY"],
-      fiTypes: ["DEPOSIT"],
-      DataConsumer: { id: "FIU" },
-      Customer: { id: mobileNumber + "@setu-aa" },
-      Purpose: {
-        code: "101",
-        refUri: "https://api.rebit.org.in/aa/purpose/101.xml",
-        text: "Wealth management service",
-        Category: { type: "string" },
+      Customer: {
+        id: mobileNumber + "@onemoney",
       },
       FIDataRange: {
-        from: "2021-01-06T11:39:57.153Z",
-        to: "2021-06-30T14:25:33.440Z",
+        from: "2021-04-01T00:00:00Z",
+        to: "2021-10-01T00:00:00Z",
       },
-      DataLife: { unit: "MONTH", value: 0 },
-      Frequency: { unit: "MONTH", value: 5 },
+      consentMode: "STORE",
+      consentTypes: ["TRANSACTIONS", "PROFILE", "SUMMARY"],
+      fetchType: "PERIODIC",
+      Frequency: {
+        value: 30,
+        unit: "MONTH",
+      },
       DataFilter: [
         {
           type: "TRANSACTIONAMOUNT",
+          value: "5000",
           operator: ">=",
-          value: "10",
         },
       ],
+      DataLife: {
+        value: 1,
+        unit: "MONTH",
+      },
+      DataConsumer: {
+        id: "setu-fiu-id",
+      },
+      Purpose: {
+        Category: {
+          type: "string",
+        },
+        code: "101",
+        text: "Loan underwriting",
+        refUri: "https://api.rebit.org.in/aa/purpose/101.xml",
+      },
+      fiTypes: ["DEPOSIT"],
     },
+    redirectUrl: "<YOUR_REDIRECT_URL>",
   });
 
   return data;
