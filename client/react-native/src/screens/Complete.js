@@ -24,13 +24,13 @@ export default function Complete({ navigation }) {
   useEffect(() => {
     setTimeout(function () {
       fetchData();
-    }, 15000);
+    }, 20000);
   }, []);
 
   const fetchData = async () => {
     try {
       const response = await fetch("<URL_OF_BACKEND_APP>/get-data/");
-      const json = await response.json();
+      let json = await response.json();
       json = json["Payload"][0]["data"][0]["decryptedFI"];
       let transactions = json["account"]["transactions"]["transaction"];
       let total_amount = 0;
@@ -146,7 +146,7 @@ export default function Complete({ navigation }) {
               Jan, 2021 to Jun, 2021 spending charts
             </Paragraph>
             <Paragraph style={{ fontWeight: "bold" }}>
-              Total spendings: ₹{data["total_amount"]}
+              Total spendings: ₹{data["total_amount"].toFixed(1)}
             </Paragraph>
             {/* <BarChart
               barWidth={15}

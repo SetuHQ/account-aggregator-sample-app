@@ -69,7 +69,7 @@ app.post("/notification", (req, res) => {
     }
   }
   if (body.type === "SESSION_STATUS_UPDATE") {
-    if (body.data.status === "ACTIVE") {
+    if (body.data.status === "COMPLETED") {
       console.log("In FI notification");
       fi_data_fetch(body.dataSessionId);
     } else {
@@ -121,7 +121,7 @@ const fi_data_fetch = (session_id) => {
   };
   axios(requestConfig)
     .then(function (response) {
-      localStorage.setItem("jsonData", response.data);
+      localStorage.setItem("jsonData", JSON.stringify(response.data));
     })
     .catch(function (error) {
       console.log(error);
