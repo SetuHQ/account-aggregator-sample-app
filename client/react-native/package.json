@@ -16,6 +16,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-gesture-handler": "~1.10.2",
+    "react-native-gifted-charts": "^1.0.4",
     "react-native-paper": "^4.9.2",
     "react-native-safe-area-context": "3.2.0",
     "react-native-status-bar-height": "^2.6.0",
